@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 
 const WA_NUMBER = '918686779278';
 const WA_MESSAGE = encodeURIComponent("Hi! I'd like to book a home service.");
+const WA_MESSAGE_PRO = encodeURIComponent("Hi! I'd like to become a partner with your company.");
 const WA_URL = `https://wa.me/${WA_NUMBER}?text=${WA_MESSAGE}`;
+const WA_URL_PRO = `https://wa.me/${WA_NUMBER}?text=${WA_MESSAGE_PRO}`;
 
 // Custom palette — only used as Tailwind arbitrary values or minimal inline styles
 const C = {
@@ -307,13 +309,15 @@ export default function App() {
                                     }}
                                 >
                                     <WaIcon /> Book via WhatsApp
-                                </a>
-                                <button
+                                </a><a
+                                    href={WA_URL}
+                                    target="_blank"
+                                    rel="noreferrer"
                                     className="inline-flex items-center justify-center font-sans text-sm font-normal rounded-full px-7 py-3.5 bg-transparent border cursor-pointer transition-all hover:-translate-y-0.5 hover:opacity-80"
                                     style={{ borderColor: C.p300, color: C.p600 }}
                                 >
                                     Become a Pro
-                                </button>
+                                </a>
                             </div>
 
                             <div
@@ -699,7 +703,7 @@ export default function App() {
                         className="inline-flex items-center gap-1.5 font-sans text-xs no-underline"
                         style={{ color: '#25D366' }}
                     >
-                        <WaIcon size={12} /> +1 514 993 1661
+                        <WaIcon size={12} /> +91 8686 77 9278 
                     </a>
                 </footer>
             </div>
