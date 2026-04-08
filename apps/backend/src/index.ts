@@ -1,20 +1,11 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import * as admin from 'firebase-admin';
+import axios from 'axios';
+import { auth as firebaseAuth } from './config/firebase';
+import prisma from './lib/prisma';
 
 dotenv.config();
-
-// Initialize Firebase Admin
-// You need to download your service account key from Firebase Console
-// and either point to it with GOOGLE_APPLICATION_CREDENTIALS env var
-// or initialize with it directly.
-if (!admin.apps.length) {
-  admin.initializeApp({
-    // credential: admin.credential.cert(require('./path-to-service-account.json'))
-    credential: admin.credential.applicationDefault(), 
-  });
-}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,7 +22,7 @@ const authenticate = async (req: Request, res: Response, next: NextFunction) => 
 
   const idToken = authHeader.split('Bearer ')[1];
   try {
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await firebaseAuth.verifyIdToken(idToken);
     (req as any).user = decodedToken;
     next();
   } catch (error) {
