@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { authApi } from '../api/authApi';
 
@@ -15,7 +15,13 @@ const SignUpScreen = ({ navigation }: any) => {
             const idToken = await result.user.getIdToken();
 
             // Integrate with backend
-            await authApi.signUpWithGoogle(idToken);
+            try {
+                await authApi.signUpWithGoogle(idToken);
+            } catch (backendError) {
+                // If backend integration fails, sign out from Firebase
+                await signOut(auth);
+                throw backendError;
+            }
 
             Alert.alert('Success', 'Account created successfully');
         } catch (error: any) {

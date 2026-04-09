@@ -26,4 +26,6 @@ model Customer {
   updatedAt      DateTime  @updatedAt
 
   @@map("customers")
+  @@index([createdAt])
+  @@index([id])
 }
