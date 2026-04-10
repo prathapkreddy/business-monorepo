@@ -309,7 +309,8 @@ export default function App() {
                                     }}
                                 >
                                     <WaIcon /> Book via WhatsApp
-                                </a><a
+                                </a>
+                                <a
                                     href={WA_URL}
                                     target="_blank"
                                     rel="noreferrer"
@@ -703,7 +704,7 @@ export default function App() {
                         className="inline-flex items-center gap-1.5 font-sans text-xs no-underline"
                         style={{ color: '#25D366' }}
                     >
-                        <WaIcon size={12} /> +91 8686 77 9278 
+                        <WaIcon size={12} /> +91 8686 77 9278
                     </a>
                 </footer>
             </div>
