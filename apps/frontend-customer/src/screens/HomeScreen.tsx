@@ -9,6 +9,7 @@ import {
     FlatList,
     Dimensions,
     Image,
+    SafeAreaView,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
@@ -97,8 +98,9 @@ const HomeScreen = () => {
     }
 
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-            <View style={styles.header}>
+        <SafeAreaView style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={styles.header}>
                 <View>
                     <Text style={styles.greetingText}>{getGreeting()},</Text>
                     <Text style={styles.nameText}>{name}</Text>
@@ -155,6 +157,7 @@ const HomeScreen = () => {
                 </View>
             </View>
         </ScrollView>
+    </SafeAreaView>
     );
 };
 
@@ -173,7 +176,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingTop: 60,
+        paddingTop: 20,
         paddingBottom: 20,
     },
     greetingText: {

@@ -8,6 +8,7 @@ import {
     TextInput,
     ScrollView,
     ActivityIndicator,
+    SafeAreaView,
 } from 'react-native';
 import customAlert from '../utils/alert';
 import { signOut } from 'firebase/auth';
@@ -128,7 +129,8 @@ const ProfileScreen = () => {
     }
 
     return (
-        <ScrollView style={styles.container}>
+        <SafeAreaView style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.header}>
                 {photoUrl ? (
                     <Image source={{ uri: photoUrl }} style={styles.profilePic} />
@@ -198,6 +200,7 @@ const ProfileScreen = () => {
 
             <View style={{ height: 40 }} />
         </ScrollView>
+    </SafeAreaView>
     );
 };
 

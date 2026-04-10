@@ -7,6 +7,7 @@ import {
     ActivityIndicator,
     TouchableOpacity,
     RefreshControl,
+    SafeAreaView,
 } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import axiosInstance from '../api/axiosInstance';
@@ -125,7 +126,7 @@ const BookingList = ({ type }: { type: 'current' | 'past' }) => {
 
 const BookingScreen = () => {
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Tab.Navigator
                 screenOptions={{
                     tabBarActiveTintColor: '#5856D6',
@@ -150,7 +151,7 @@ const BookingScreen = () => {
                 <Tab.Screen name="Current" children={() => <BookingList type="current" />} />
                 <Tab.Screen name="Past" children={() => <BookingList type="past" />} />
             </Tab.Navigator>
-        </View>
+        </SafeAreaView>
     );
 };
 

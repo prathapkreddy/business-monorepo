@@ -32,7 +32,6 @@ const WebViewScreen = () => {
                 </style>
             </head>
             <body>
-                <h1>${title}</h1>
                 <p>Coming Soon!</p>
                 <div>We are working hard to bring you this content. Stay tuned!</div>
                 <div class="footer">&copy; 2026 Business App</div>
@@ -43,7 +42,6 @@ const WebViewScreen = () => {
     if (Platform.OS === 'web') {
         return (
             <View style={styles.webContainer}>
-                <Text style={styles.webTitle}>{title}</Text>
                 <Text style={styles.webText}>Coming Soon!</Text>
                 <Text style={styles.webSubText}>
                     We are working hard to bring you this content. Stay tuned!
