@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import customAlert from '../utils/alert';
-import { signOut } from 'firebase/auth';
-import { auth } from '../config/firebase';
 import { authApi } from '../api/authApi';
 import { useGoogleSignIn } from '../utils/authHelper';
 
@@ -13,23 +11,11 @@ const SignInScreen = ({ navigation }: any) => {
     const handleGoogleSignIn = async () => {
         setLoading(true);
         try {
-            const user = await signIn();
-            if (!user) {
-                setLoading(false);
+            const idToken = await signIn();
+            if (!idToken) {
                 return;
             }
-            const idToken = await user.getIdToken();
-
-            // Integrate with backend
-            try {
-                await authApi.signInWithGoogle(idToken);
-            } catch (backendError) {
-                // If backend integration fails, sign out from Firebase
-                await signOut(auth);
-                throw backendError;
-            }
-
-            // customAlert('Success', 'Signed in successfully');
+            await authApi.signInWithGoogle(idToken);
         } catch (error: any) {
             console.error('Sign in error:', error);
             customAlert('Error', error.message);
@@ -37,8 +23,6 @@ const SignInScreen = ({ navigation }: any) => {
             setLoading(false);
         }
     };
-
-    const isButtonDisabled = loading || authLoading;
 
     return (
         <View style={styles.container}>
@@ -48,7 +32,7 @@ const SignInScreen = ({ navigation }: any) => {
             <TouchableOpacity
                 style={styles.googleButton}
                 onPress={handleGoogleSignIn}
-                disabled={isButtonDisabled}
+                disabled={loading || authLoading}
             >
                 {loading ? (
                     <ActivityIndicator color="#fff" />
