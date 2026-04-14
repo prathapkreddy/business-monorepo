@@ -21,6 +21,15 @@ const router = Router();
  *     responses:
  *       200:
  *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   type: object
  */
 router.post('/google-signin', authController.googleSignin);
 
@@ -42,6 +51,15 @@ router.post('/google-signin', authController.googleSignin);
  *     responses:
  *       201:
  *         description: User created successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   type: object
  */
 router.post('/google-signup', authController.googleSignup);
 

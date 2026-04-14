@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { auth as firebaseAuth } from '../config/firebase';
+import { authService } from '../services/auth.service';
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
@@ -9,7 +9,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
     const idToken = authHeader.split('Bearer ')[1];
     try {
-        const decodedToken = await firebaseAuth.verifyIdToken(idToken);
+        const decodedToken = await authService.verifyIdToken(idToken);
         (req as any).user = decodedToken;
         next();
     } catch (error) {

@@ -1,34 +1,47 @@
 import React, { useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../config/firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import { setUser, setLoading } from '../store/slices/authSlice';
+import axiosInstance from '../api/axiosInstance';
 
 export const AuthSync: React.FC = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(setLoading(true));
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-            if (firebaseUser) {
-                const idToken = await firebaseUser.getIdToken();
+        const restoreSession = async () => {
+            dispatch(setLoading(true));
+            try {
+                const token = await AsyncStorage.getItem('authToken');
+                if (!token) {
+                    dispatch(setUser({ user: null, idToken: null }));
+                    return;
+                }
+
+                // Validate token and fetch user from your backend
+                const response = await axiosInstance.get('/customers/profile');
+                const user = response.data;
+
                 dispatch(
                     setUser({
                         user: {
-                            uid: firebaseUser.uid,
-                            email: firebaseUser.email,
-                            displayName: firebaseUser.displayName,
-                            photoURL: firebaseUser.photoURL,
+                            uid: user.id,
+                            email: user.email,
+                            displayName: user.name,
+                            photoURL: user.photoUrl,
                         },
-                        idToken,
+                        idToken: token,
                     })
                 );
-            } else {
+            } catch (error) {
+                // Token invalid or expired — clear it
+                await AsyncStorage.removeItem('authToken');
                 dispatch(setUser({ user: null, idToken: null }));
+            } finally {
+                dispatch(setLoading(false));
             }
-        });
+        };
 
-        return () => unsubscribe();
+        restoreSession();
     }, [dispatch]);
 
     return null;
