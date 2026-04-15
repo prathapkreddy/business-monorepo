@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import customAlert from '../utils/alert';
-import { signOut } from 'firebase/auth';
-import { auth } from '../config/firebase';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
+import { logout } from '../store/slices/authSlice';
+import { authApi } from '../api/authApi';
 import {
     LogOut,
     ChevronRight,
@@ -30,6 +30,7 @@ import axiosInstance from '../api/axiosInstance';
 
 const ProfileScreen = () => {
     const navigation = useNavigation<any>();
+    const dispatch = useDispatch();
     const { user: authUser } = useSelector((state: RootState) => state.auth);
     const [name, setName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -84,7 +85,18 @@ const ProfileScreen = () => {
         console.log('Sign out clicked');
         customAlert('Sign Out', 'Are you sure you want to sign out?', [
             { text: 'Cancel', style: 'cancel' },
-            { text: 'Sign Out', style: 'destructive', onPress: () => signOut(auth) },
+            {
+                text: 'Sign Out',
+                style: 'destructive',
+                onPress: async () => {
+                    try {
+                        await authApi.signOut();
+                        dispatch(logout());
+                    } catch (error) {
+                        console.error('Logout error:', error);
+                    }
+                },
+            },
         ]);
     };
 
