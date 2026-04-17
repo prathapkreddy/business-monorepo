@@ -6,16 +6,16 @@ import * as AuthSession from 'expo-auth-session';
 WebBrowser.maybeCompleteAuthSession();
 
 export const useGoogleSignIn = () => {
-   const [request, response, promptAsync] = Google.useAuthRequest({
-       webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID,
-       androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
-       redirectUri: AuthSession.makeRedirectUri({
-           scheme: 'com.kprathapreddy1997.frontendcustomer',
-           preferLocalhost: true,
-       }),
-       responseType: 'id_token',  // explicitly request id_token
-       usePKCE: false,            // required when using id_token on web
-   });
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID,
+        androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
+        redirectUri: AuthSession.makeRedirectUri({
+            scheme: 'com.kprathapreddy1997.frontendcustomer',
+            preferLocalhost: true,
+        }),
+        responseType: 'id_token', // explicitly request id_token
+        usePKCE: false, // required when using id_token on web
+    });
 
     console.log('Redirect URI:', request?.redirectUri);
 

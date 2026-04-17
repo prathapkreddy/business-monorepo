@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import customAlert from '../utils/alert';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
@@ -18,7 +18,7 @@ const SignUpScreen = ({ navigation }: any) => {
                 setLoading(false);
                 return;
             }
-            const idToken = await user.getIdToken();
+            const idToken = await signIn();
 
             // Integrate with backend
             try {
@@ -41,66 +41,29 @@ const SignUpScreen = ({ navigation }: any) => {
     const isButtonDisabled = loading || authLoading;
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>Join us today</Text>
+        <View className="flex-1 justify-center bg-white p-5">
+            <Text className="mb-2.5 text-center text-[28px] font-bold">Create Account</Text>
+            <Text className="mb-[30px] text-center text-base text-[#666]">Join us today</Text>
 
             <TouchableOpacity
-                style={styles.googleButton}
+                className="flex-row items-center justify-center rounded-lg bg-[#DB4437] p-[15px]"
                 onPress={handleGoogleSignUp}
                 disabled={isButtonDisabled}
             >
                 {loading ? (
                     <ActivityIndicator color="#fff" />
                 ) : (
-                    <Text style={styles.buttonText}>Sign up with Google</Text>
+                    <Text className="text-base font-bold text-white">Sign up with Google</Text>
                 )}
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
-                <Text style={styles.linkText}>Already have an account? Sign In</Text>
+                <Text className="mt-5 text-center text-[#007AFF]">
+                    Already have an account? Sign In
+                </Text>
             </TouchableOpacity>
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 20,
-        backgroundColor: '#fff',
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        textAlign: 'center',
-    },
-    subtitle: {
-        fontSize: 16,
-        color: '#666',
-        marginBottom: 30,
-        textAlign: 'center',
-    },
-    googleButton: {
-        backgroundColor: '#DB4437', // Google Red
-        padding: 15,
-        borderRadius: 8,
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
-    buttonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 16,
-    },
-    linkText: {
-        marginTop: 20,
-        color: '#007AFF',
-        textAlign: 'center',
-    },
-});
 
 export default SignUpScreen;

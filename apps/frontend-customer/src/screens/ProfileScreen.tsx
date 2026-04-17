@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-    StyleSheet,
     Text,
     View,
     TouchableOpacity,
@@ -8,13 +7,13 @@ import {
     TextInput,
     ScrollView,
     ActivityIndicator,
-    SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import customAlert from '../utils/alert';
-import { signOut } from 'firebase/auth';
-import { auth } from '../config/firebase';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
+import { logout } from '../store/slices/authSlice';
+import { authApi } from '../api/authApi';
 import {
     LogOut,
     ChevronRight,
@@ -31,6 +30,7 @@ import axiosInstance from '../api/axiosInstance';
 
 const ProfileScreen = () => {
     const navigation = useNavigation<any>();
+    const dispatch = useDispatch();
     const { user: authUser } = useSelector((state: RootState) => state.auth);
     const [name, setName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -85,25 +85,38 @@ const ProfileScreen = () => {
         console.log('Sign out clicked');
         customAlert('Sign Out', 'Are you sure you want to sign out?', [
             { text: 'Cancel', style: 'cancel' },
-            { text: 'Sign Out', style: 'destructive', onPress: () => signOut(auth) },
+            {
+                text: 'Sign Out',
+                style: 'destructive',
+                onPress: async () => {
+                    try {
+                        await authApi.signOut();
+                        dispatch(logout());
+                    } catch (error) {
+                        console.error('Logout error:', error);
+                    }
+                },
+            },
         ]);
     };
 
     const ProfileItem = ({ icon: Icon, label, value, editable = false, onChangeText }: any) => (
-        <View style={styles.itemContainer}>
-            <View style={styles.itemHeader}>
-                <Icon size={20} color="#666" style={styles.itemIcon} />
-                <Text style={styles.itemLabel}>{label}</Text>
+        <View className="border-b border-[#f0f0f0] py-[15px]">
+            <View className="mb-1 flex-row items-center">
+                <Icon size={20} color="#666" className="mr-2.5" />
+                <Text className="text-sm font-medium text-[#888]">{label}</Text>
             </View>
             {isEditing && editable ? (
                 <TextInput
-                    style={styles.itemInput}
+                    className="border-b border-[#5856D6] py-1 pl-[30px] text-base text-[#333]"
                     value={value}
                     onChangeText={onChangeText}
                     placeholder={`Enter ${label}`}
                 />
             ) : (
-                <Text style={[styles.itemValue, !value && styles.placeholderText]}>
+                <Text
+                    className={`pl-[30px] text-base text-[#333] ${!value ? 'italic text-[#ccc]' : ''}`}
+                >
                     {value || `No ${label} provided`}
                 </Text>
             )}
@@ -111,10 +124,15 @@ const ProfileScreen = () => {
     );
 
     const LinkItem = ({ icon: Icon, label, onPress, color = '#333' }: any) => (
-        <TouchableOpacity style={styles.linkItem} onPress={onPress}>
-            <View style={styles.linkLeft}>
-                <Icon size={20} color={color} style={styles.itemIcon} />
-                <Text style={[styles.linkLabel, { color }]}>{label}</Text>
+        <TouchableOpacity
+            className="flex-row items-center justify-between border-b border-[#f0f0f0] py-[15px]"
+            onPress={onPress}
+        >
+            <View className="flex-row items-center">
+                <Icon size={20} color={color} className="mr-2.5" />
+                <Text className="text-base font-medium" style={{ color }}>
+                    {label}
+                </Text>
             </View>
             <ChevronRight size={20} color="#ccc" />
         </TouchableOpacity>
@@ -122,35 +140,45 @@ const ProfileScreen = () => {
 
     if (fetching) {
         return (
-            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+            <View className="flex-1 items-center justify-center bg-[#f8f9fa]">
                 <ActivityIndicator size="large" color="#5856D6" />
             </View>
         );
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={styles.header}>
+        <SafeAreaView className="flex-1 bg-[#f8f9fa]" style={{ flex: 1 }}>
+            <ScrollView
+                className="flex-1"
+                style={{ flex: 1 }}
+                contentContainerStyle={{ flexGrow: 1 }}
+                showsVerticalScrollIndicator={false}
+            >
+                <View className="items-center border-b border-[#eee] bg-white p-[30px]">
                     {photoUrl ? (
-                        <Image source={{ uri: photoUrl }} style={styles.profilePic} />
+                        <Image
+                            source={{ uri: photoUrl }}
+                            className="mb-[15px] h-[100px] w-[100px] rounded-full bg-[#eee]"
+                        />
                     ) : (
-                        <View style={[styles.profilePic, styles.placeholderPic]}>
+                        <View className="mb-[15px] h-[100px] w-[100px] items-center justify-center rounded-full bg-[#F2F2F7]">
                             <User size={50} color="#8E8E93" />
                         </View>
                     )}
-                    <Text style={styles.userName}>{name || 'User'}</Text>
+                    <Text className="mb-2.5 text-[22px] font-bold text-[#333]">
+                        {name || 'User'}
+                    </Text>
                     <TouchableOpacity
-                        style={styles.editButton}
+                        className="rounded-full border border-[#5856D6] bg-[#F0F0FF] px-5 py-2"
                         onPress={() => (isEditing ? handleUpdateProfile() : setIsEditing(true))}
                     >
-                        <Text style={styles.editButtonText}>
+                        <Text className="font-semibold text-[#5856D6]">
                             {isEditing ? 'Save Changes' : 'Edit Profile'}
                         </Text>
                     </TouchableOpacity>
                 </View>
 
-                <View style={styles.section}>
+                <View className="mt-5 border-y border-[#eee] bg-white px-5">
                     <ProfileItem
                         icon={User}
                         label="Name"
@@ -166,10 +194,12 @@ const ProfileScreen = () => {
                         onChangeText={setPhoneNumber}
                     />
                     <ProfileItem icon={Mail} label="Email" value={email} editable={false} />
-                    <Text style={styles.infoText}>Email cannot be updated</Text>
+                    <Text className="mb-2.5 mt-1 text-right text-xs text-[#999]">
+                        Email cannot be updated
+                    </Text>
                 </View>
 
-                <View style={styles.section}>
+                <View className="mt-5 border-y border-[#eee] bg-white px-5">
                     <LinkItem
                         icon={Shield}
                         label="Privacy Policy"
@@ -193,9 +223,12 @@ const ProfileScreen = () => {
                     />
                 </View>
 
-                <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-                    <LogOut size={20} color="#FF3B30" style={{ marginRight: 10 }} />
-                    <Text style={styles.signOutText}>Logout</Text>
+                <TouchableOpacity
+                    className="mx-5 mt-[30px] flex-row items-center justify-center rounded-[12px] bg-[#F2F2F7] p-[15px]"
+                    onPress={handleSignOut}
+                >
+                    <LogOut size={20} color="#FF3B30" className="mr-2.5" />
+                    <Text className="text-base font-bold text-[#FF3B30]">Logout</Text>
                 </TouchableOpacity>
 
                 <View style={{ height: 40 }} />
@@ -203,130 +236,5 @@ const ProfileScreen = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#f8f9fa',
-    },
-    header: {
-        alignItems: 'center',
-        padding: 30,
-        backgroundColor: '#fff',
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee',
-    },
-    profilePic: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        marginBottom: 15,
-        backgroundColor: '#eee',
-    },
-    placeholderPic: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F2F2F7',
-    },
-    userName: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 10,
-    },
-    editButton: {
-        paddingHorizontal: 20,
-        paddingVertical: 8,
-        borderRadius: 20,
-        backgroundColor: '#F0F0FF',
-        borderWidth: 1,
-        borderColor: '#5856D6',
-    },
-    editButtonText: {
-        color: '#5856D6',
-        fontWeight: '600',
-    },
-    section: {
-        backgroundColor: '#fff',
-        marginTop: 20,
-        paddingHorizontal: 20,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-        borderColor: '#eee',
-    },
-    itemContainer: {
-        paddingVertical: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
-    },
-    itemHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 5,
-    },
-    itemIcon: {
-        marginRight: 10,
-    },
-    itemLabel: {
-        fontSize: 14,
-        color: '#888',
-        fontWeight: '500',
-    },
-    itemValue: {
-        fontSize: 16,
-        color: '#333',
-        paddingLeft: 30,
-    },
-    itemInput: {
-        fontSize: 16,
-        color: '#333',
-        paddingLeft: 30,
-        paddingVertical: 5,
-        borderBottomWidth: 1,
-        borderBottomColor: '#5856D6',
-    },
-    placeholderText: {
-        color: '#ccc',
-        fontStyle: 'italic',
-    },
-    infoText: {
-        fontSize: 12,
-        color: '#999',
-        textAlign: 'right',
-        marginTop: 5,
-        marginBottom: 10,
-    },
-    linkItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
-    },
-    linkLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    linkLabel: {
-        fontSize: 16,
-        fontWeight: '500',
-    },
-    signOutButton: {
-        flexDirection: 'row',
-        backgroundColor: '#F2F2F7',
-        marginHorizontal: 20,
-        marginTop: 30,
-        padding: 15,
-        borderRadius: 12,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    signOutText: {
-        color: '#FF3B30',
-        fontWeight: 'bold',
-        fontSize: 16,
-    },
-});
 
 export default ProfileScreen;

@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     async (config) => {
         let token = store.getState().auth.idToken;
-        
+
         if (!token) {
             // If token is not in Redux state (e.g. after refresh), check AsyncStorage
             try {

@@ -8,6 +8,12 @@ export const authApi = {
         await AsyncStorage.setItem('authToken', token);
         return { token, user };
     },
+    signUpWithGoogle: async (idToken: string) => {
+        const response = await axiosInstance.post('/auth/google-signup', { idToken });
+        const { token, user } = response.data;
+        await AsyncStorage.setItem('authToken', token);
+        return { token, user };
+    },
     signOut: async () => {
         await AsyncStorage.removeItem('authToken');
     },

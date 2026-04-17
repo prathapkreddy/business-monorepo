@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-    StyleSheet,
     Text,
     View,
     FlatList,
     ActivityIndicator,
     TouchableOpacity,
     RefreshControl,
-    SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import axiosInstance from '../api/axiosInstance';
 import { Calendar, Clock, MapPin, ChevronRight } from 'lucide-react-native';
@@ -28,33 +27,37 @@ const BookingItem = ({ item }: { item: any }) => {
     });
 
     return (
-        <TouchableOpacity style={styles.bookingItem}>
-            <View style={styles.bookingLeft}>
-                <View style={styles.dateBadge}>
-                    <Text style={styles.dateBadgeDay}>{date.getDate()}</Text>
-                    <Text style={styles.dateBadgeMonth}>
+        <TouchableOpacity className="elevation-2 mb-[15px] flex-row items-center justify-between rounded-[12px] border border-[#f0f0f0] bg-white p-[15px] shadow-sm shadow-black/5">
+            <View className="flex-row items-center">
+                <View className="mr-[15px] h-[50px] w-[50px] items-center justify-center rounded-[10px] bg-[#F0F0FF]">
+                    <Text className="text-lg font-bold text-[#5856D6]">{date.getDate()}</Text>
+                    <Text className="text-[10px] font-bold text-[#5856D6]">
                         {date.toLocaleString('en-US', { month: 'short' }).toUpperCase()}
                     </Text>
                 </View>
-                <View style={styles.bookingDetails}>
-                    <Text style={styles.serviceName}>{item.serviceName}</Text>
-                    <View style={styles.detailRow}>
-                        <Clock size={14} color="#666" style={styles.detailIcon} />
-                        <Text style={styles.detailText}>{formattedTime}</Text>
+                <View className="flex-1">
+                    <Text className="mb-1 text-base font-bold text-[#333]">{item.serviceName}</Text>
+                    <View className="mb-1 flex-row items-center">
+                        <Clock size={14} color="#666" className="mr-1" />
+                        <Text className="text-[13px] text-[#666]">{formattedTime}</Text>
                     </View>
                     <View
-                        style={[
-                            styles.statusBadge,
-                            item.status === 'CANCELLED' && styles.statusBadgeCancelled,
-                            item.status === 'CONFIRMED' && styles.statusBadgeConfirmed,
-                        ]}
+                        className={`self-start rounded-[10px] px-2 py-0.5 ${
+                            item.status === 'CANCELLED'
+                                ? 'bg-[#FFF0F0]'
+                                : item.status === 'CONFIRMED'
+                                  ? 'bg-[#F0FFF0]'
+                                  : 'bg-[#FFF9F0]'
+                        }`}
                     >
                         <Text
-                            style={[
-                                styles.statusText,
-                                item.status === 'CANCELLED' && styles.statusTextCancelled,
-                                item.status === 'CONFIRMED' && styles.statusTextConfirmed,
-                            ]}
+                            className={`text-[11px] font-bold ${
+                                item.status === 'CANCELLED'
+                                    ? 'text-[#FF3B30]'
+                                    : item.status === 'CONFIRMED'
+                                      ? 'text-[#34C759]'
+                                      : 'text-[#FF9500]'
+                            }`}
                         >
                             {item.status}
                         </Text>
@@ -95,7 +98,7 @@ const BookingList = ({ type }: { type: 'current' | 'past' }) => {
 
     if (loading) {
         return (
-            <View style={styles.centered}>
+            <View className="flex-1 items-center justify-center">
                 <ActivityIndicator size="large" color="#5856D6" />
             </View>
         );
@@ -103,10 +106,12 @@ const BookingList = ({ type }: { type: 'current' | 'past' }) => {
 
     return (
         <FlatList
+            className="flex-1"
+            style={{ flex: 1 }}
             data={bookings}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <BookingItem item={item} />}
-            contentContainerStyle={styles.listContent}
+            contentContainerStyle={{ padding: 15, flexGrow: 1 }}
             refreshControl={
                 <RefreshControl
                     refreshing={refreshing}
@@ -115,9 +120,9 @@ const BookingList = ({ type }: { type: 'current' | 'past' }) => {
                 />
             }
             ListEmptyComponent={
-                <View style={styles.emptyContainer}>
+                <View className="mt-[100px] flex-1 items-center justify-center">
                     <Calendar size={48} color="#ccc" />
-                    <Text style={styles.emptyText}>No {type} bookings found</Text>
+                    <Text className="mt-2.5 text-base text-[#999]">No {type} bookings found</Text>
                 </View>
             }
         />
@@ -126,7 +131,7 @@ const BookingList = ({ type }: { type: 'current' | 'past' }) => {
 
 const BookingScreen = () => {
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView className="flex-1 bg-white" style={{ flex: 1 }}>
             <Tab.Navigator
                 screenOptions={{
                     tabBarActiveTintColor: '#5856D6',
@@ -154,115 +159,5 @@ const BookingScreen = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-    centered: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    listContent: {
-        padding: 15,
-    },
-    bookingItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        padding: 15,
-        marginBottom: 15,
-        borderWidth: 1,
-        borderColor: '#f0f0f0',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 5,
-        elevation: 2,
-    },
-    bookingLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    dateBadge: {
-        width: 50,
-        height: 50,
-        backgroundColor: '#F0F0FF',
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 15,
-    },
-    dateBadgeDay: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#5856D6',
-    },
-    dateBadgeMonth: {
-        fontSize: 10,
-        fontWeight: 'bold',
-        color: '#5856D6',
-    },
-    bookingDetails: {
-        flex: 1,
-    },
-    serviceName: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 4,
-    },
-    detailRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 4,
-    },
-    detailIcon: {
-        marginRight: 5,
-    },
-    detailText: {
-        fontSize: 13,
-        color: '#666',
-    },
-    statusBadge: {
-        alignSelf: 'flex-start',
-        paddingHorizontal: 8,
-        paddingVertical: 2,
-        borderRadius: 10,
-        backgroundColor: '#FFF9F0', // Default PENDING
-    },
-    statusBadgeCancelled: {
-        backgroundColor: '#FFF0F0',
-    },
-    statusBadgeConfirmed: {
-        backgroundColor: '#F0FFF0',
-    },
-    statusText: {
-        fontSize: 11,
-        fontWeight: 'bold',
-        color: '#FF9500', // Default PENDING
-    },
-    statusTextCancelled: {
-        color: '#FF3B30',
-    },
-    statusTextConfirmed: {
-        color: '#34C759',
-    },
-    emptyContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 100,
-    },
-    emptyText: {
-        marginTop: 10,
-        fontSize: 16,
-        color: '#999',
-    },
-});
 
 export default BookingScreen;
