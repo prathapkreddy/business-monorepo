@@ -1,12 +1,5 @@
 import React, { useRef, useState } from 'react';
-import {
-    View,
-    Text,
-    FlatList,
-    Dimensions,
-    TouchableOpacity,
-    Image,
-} from 'react-native';
+import { View, Text, FlatList, Dimensions, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
@@ -64,35 +57,26 @@ const OnboardingScreen = ({ navigation }: any) => {
                 showsHorizontalScrollIndicator={false}
                 getItemLayout={getItemLayout}
                 onMomentumScrollEnd={(e) => {
-                    const newIndex = Math.round(
-                        e.nativeEvent.contentOffset.x / width
-                    );
+                    const newIndex = Math.round(e.nativeEvent.contentOffset.x / width);
                     setIndex(newIndex);
                 }}
                 renderItem={({ item }) => (
-                    <View
-                        style={{ width }}
-                        className="items-center justify-center px-8"
-                    >
+                    <View style={{ width }} className="items-center justify-center px-8">
                         <Image
                             source={item.image}
                             style={{ width: 260, height: 260 }}
                             resizeMode="contain"
                         />
 
-                        <Text className="mt-10 text-center text-2xl font-bold">
-                            {item.title}
-                        </Text>
+                        <Text className="mt-10 text-center text-2xl font-bold">{item.title}</Text>
 
-                        <Text className="mt-3 text-center text-gray-500">
-                            {item.desc}
-                        </Text>
+                        <Text className="mt-3 text-center text-gray-500">{item.desc}</Text>
                     </View>
                 )}
             />
 
             {/* DOTS */}
-            <View className="flex-row justify-center mb-6">
+            <View className="mb-6 flex-row justify-center">
                 {slides.map((_, i) => (
                     <View
                         key={i}
@@ -104,11 +88,8 @@ const OnboardingScreen = ({ navigation }: any) => {
             </View>
 
             {/* BUTTON */}
-            <TouchableOpacity
-                onPress={onNext}
-                className="mx-6 mb-10 rounded-xl bg-black py-4"
-            >
-                <Text className="text-center text-white font-semibold">
+            <TouchableOpacity onPress={onNext} className="mx-6 mb-10 rounded-xl bg-black py-4">
+                <Text className="text-center font-semibold text-white">
                     {index === slides.length - 1 ? 'Get Started' : 'Next'}
                 </Text>
             </TouchableOpacity>

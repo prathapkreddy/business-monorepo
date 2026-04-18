@@ -45,9 +45,7 @@ const SplashScreen = ({ navigation }: any) => {
                 resizeMode="contain"
             />
 
-            <Text className="text-xl font-bold text-white">
-                YourApp
-            </Text>
+            <Text className="text-xl font-bold text-white">YourApp</Text>
 
             <ActivityIndicator color="#fff" style={{ marginTop: 20 }} />
         </View>
