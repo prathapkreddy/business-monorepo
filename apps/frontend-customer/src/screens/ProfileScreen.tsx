@@ -14,20 +14,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { logout } from '../store/slices/authSlice';
 import { authApi } from '../api/authApi';
-import {
-    LogOut,
-    ChevronRight,
-    User,
-    Phone,
-    Mail,
-    Shield,
-    HelpCircle,
-    Info,
-    Trash2,
-} from 'lucide-react-native';
+import { LogOut, User, Phone, Mail, Shield, HelpCircle, Info, Trash2 } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import axiosInstance from '../api/axiosInstance';
 import { useAuth } from '../hooks/useAuth';
+import ProfileItem from '../components/screen/profile/ProfileItem';
+import LinkItem from '../components/screen/profile/LinkItem';
 
 const ProfileScreen = () => {
     const navigation = useNavigation<any>();
@@ -101,44 +93,6 @@ const ProfileScreen = () => {
         ]);
     };
 
-    const ProfileItem = ({ icon: Icon, label, value, editable = false, onChangeText }: any) => (
-        <View className="border-b border-[#f0f0f0] py-[15px]">
-            <View className="mb-1 flex-row items-center">
-                <Icon size={20} color="#666" className="mr-2.5" />
-                <Text className="text-sm font-medium text-[#888]">{label}</Text>
-            </View>
-            {isEditing && editable ? (
-                <TextInput
-                    className="border-b border-[#5856D6] py-1 pl-[30px] text-base text-[#333]"
-                    value={value}
-                    onChangeText={onChangeText}
-                    placeholder={`Enter ${label}`}
-                />
-            ) : (
-                <Text
-                    className={`pl-[30px] text-base text-[#333] ${!value ? 'italic text-[#ccc]' : ''}`}
-                >
-                    {value || `No ${label} provided`}
-                </Text>
-            )}
-        </View>
-    );
-
-    const LinkItem = ({ icon: Icon, label, onPress, color = '#333' }: any) => (
-        <TouchableOpacity
-            className="flex-row items-center justify-between border-b border-[#f0f0f0] py-[15px]"
-            onPress={onPress}
-        >
-            <View className="flex-row items-center">
-                <Icon size={20} color={color} className="mr-2.5" />
-                <Text className="text-base font-medium" style={{ color }}>
-                    {label}
-                </Text>
-            </View>
-            <ChevronRight size={20} color="#ccc" />
-        </TouchableOpacity>
-    );
-
     if (fetching) {
         return (
             <View className="flex-1 items-center justify-center bg-[#f8f9fa]">
@@ -184,6 +138,7 @@ const ProfileScreen = () => {
                         icon={User}
                         label="Name"
                         value={name}
+                        isEditing={isEditing}
                         editable={true}
                         onChangeText={setName}
                     />
@@ -191,10 +146,17 @@ const ProfileScreen = () => {
                         icon={Phone}
                         label="Phone Number"
                         value={phoneNumber}
+                        isEditing={isEditing}
                         editable={true}
                         onChangeText={setPhoneNumber}
                     />
-                    <ProfileItem icon={Mail} label="Email" value={email} editable={false} />
+                    <ProfileItem
+                        icon={Mail}
+                        label="Email"
+                        value={email}
+                        isEditing={isEditing}
+                        editable={false}
+                    />
                     <Text className="mb-2.5 mt-1 text-right text-xs text-[#999]">
                         Email cannot be updated
                     </Text>
