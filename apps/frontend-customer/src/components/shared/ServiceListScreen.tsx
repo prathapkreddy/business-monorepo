@@ -12,10 +12,21 @@ const ServiceListScreen = () => {
     const route = useRoute();
     const { title, data, type } = route.params as any;
 
+    const handleServicePress = (item: any) => {
+        (navigation as any).navigate('WebView', {
+            title: item.name,
+            serviceId: item.id,
+            type: 'service',
+        });
+    };
+
     const renderServiceItem = ({ item }: { item: any }) => {
         const Icon = (LucideIcons as any)[item.icon] || LucideIcons.Home;
         return (
-            <TouchableOpacity className="mb-[15px] flex-row items-center rounded-[15px] border border-[#F2F2F7] bg-white p-[15px]">
+            <TouchableOpacity
+                onPress={() => handleServicePress(item)}
+                className="mb-[15px] flex-row items-center rounded-[15px] border border-[#F2F2F7] bg-white p-[15px]"
+            >
                 <View
                     className="mr-[15px] h-[50px] w-[50px] items-center justify-center rounded-[12px]"
                     style={{ backgroundColor: item.color + '15' }}
@@ -40,7 +51,10 @@ const ServiceListScreen = () => {
     };
 
     const renderBestSellerItem = ({ item }: { item: any }) => (
-        <TouchableOpacity className="mb-[15px] flex-row overflow-hidden rounded-[15px] border border-[#F2F2F7] bg-white">
+        <TouchableOpacity
+            onPress={() => handleServicePress(item)}
+            className="mb-[15px] flex-row overflow-hidden rounded-[15px] border border-[#F2F2F7] bg-white"
+        >
             <Image source={{ uri: item.image }} className="h-20 w-20" />
             <View className="flex-1 justify-center p-3">
                 <Text className="mb-1.5 text-[15px] font-bold text-[#1C1C1E]">{item.name}</Text>
@@ -86,7 +100,6 @@ const ServiceListScreen = () => {
     );
 
     const getRenderItem = () => {
-        if (type === 'bestSellers') return renderBestSellerItem;
         if (type === 'offers') return renderOfferItem;
         return renderServiceItem;
     };

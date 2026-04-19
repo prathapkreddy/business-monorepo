@@ -20,6 +20,11 @@ const HomeStackScreen = () => (
             component={ServiceListScreen}
             options={{ headerShown: false }}
         />
+        <HomeStack.Screen
+            name="WebView"
+            component={WebViewScreen}
+            options={({ route }: any) => ({ title: route.params?.title || 'Page' })}
+        />
     </HomeStack.Navigator>
 );
 

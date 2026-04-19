@@ -8,6 +8,7 @@ import {
     FlatList,
     Dimensions,
     Image,
+    RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
@@ -17,7 +18,7 @@ import axiosInstance from '../api/axiosInstance';
 import { User } from 'lucide-react-native';
 import ServiceCard from '../components/screen/home/ServiceCard';
 import OfferCard from '../components/screen/home/OfferCard';
-import BestSellerCard from '../components/screen/home/BestSellerCard';
+import Services from '../components/screen/home/Services';
 import OfferDetailModal from '../components/homeScreen/OfferDetailModal';
 import { contentApi } from '../api/contentApi';
 
@@ -32,44 +33,55 @@ const HomeScreen = () => {
     const [name, setName] = useState('');
     const [profilePic, setProfilePic] = useState('');
     const [fetching, setFetching] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [services, setServices] = useState<any[]>([]);
     const [offers, setOffers] = useState<any[]>([]);
-    const [bestSellers, setBestSellers] = useState<any[]>([]);
     const [recentlyViewed, setRecentlyViewed] = useState<any[]>([]);
     const [selectedOffer, setSelectedOffer] = useState<any>(null);
     const [offerModalVisible, setOfferModalVisible] = useState(false);
 
-    useFocusEffect(
-        useCallback(() => {
-            fetchData();
-        }, [])
+    const fetchData = useCallback(
+        async (showRefreshing = true) => {
+            // We only want to show the full screen loader if we have NO data at all
+            const hasData = services.length > 0 || offers.length > 0;
+
+            if (!hasData) {
+                setFetching(true);
+            } else if (showRefreshing) {
+                setIsRefreshing(true);
+            }
+
+            try {
+                const [profileRes, homeRes] = await Promise.all([
+                    axiosInstance.get('/customers/profile'),
+                    axiosInstance.get('/home/data'),
+                ]);
+
+                const customer = profileRes.data;
+                setName(customer.name || authUser?.displayName || 'User');
+                setProfilePic(customer.photoUrl || authUser?.photoURL || '');
+
+                const homeData = homeRes.data;
+                setServices(homeData.services || []);
+                setOffers(homeData.offers || []);
+                setRecentlyViewed(homeData.recentlyViewed || []);
+            } catch (error) {
+                console.error('Error fetching home data:', error);
+                setName(authUser?.displayName || 'User');
+                // If home data fails, keep arrays empty
+            } finally {
+                setFetching(false);
+                setIsRefreshing(false);
+            }
+        },
+        [authUser?.displayName, authUser?.photoURL]
     );
 
-    const fetchData = async () => {
-        setFetching(true);
-        try {
-            const [profileRes, homeRes] = await Promise.all([
-                axiosInstance.get('/customers/profile'),
-                axiosInstance.get('/home/data'),
-            ]);
-
-            const customer = profileRes.data;
-            setName(customer.name || authUser?.displayName || 'User');
-            setProfilePic(customer.photoUrl || authUser?.photoURL || '');
-
-            const homeData = homeRes.data;
-            setServices(homeData.services || []);
-            setOffers(homeData.offers || []);
-            setBestSellers(homeData.bestSellers || []);
-            setRecentlyViewed(homeData.recentlyViewed || []);
-        } catch (error) {
-            console.error('Error fetching home data:', error);
-            setName(authUser?.displayName || 'User');
-            // If home data fails, keep arrays empty
-        } finally {
-            setFetching(false);
-        }
-    };
+    useFocusEffect(
+        useCallback(() => {
+            fetchData(false);
+        }, [fetchData])
+    );
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -90,7 +102,7 @@ const HomeScreen = () => {
         setOfferModalVisible(true);
     };
 
-    if (fetching) {
+    if (fetching && services.length === 0 && offers.length === 0) {
         return (
             <View className="flex-1 items-center justify-center">
                 <ActivityIndicator size="large" color="#5856D6" />
@@ -106,6 +118,13 @@ const HomeScreen = () => {
                 style={{ flex: 1 }}
                 contentContainerStyle={{ flexGrow: 1 }}
                 showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={fetchData}
+
+                    />
+                }
             >
                 <View className="flex-row items-center justify-between px-5 py-5">
                     <View>
@@ -129,17 +148,6 @@ const HomeScreen = () => {
                 <View>
                     <View className="mb-[15px] mt-[25px] flex-row items-center justify-between px-5">
                         <Text className="text-xl font-bold text-[#1C1C1E]">Featured Services</Text>
-                        <TouchableOpacity
-                            onPress={() =>
-                                navigation.navigate('ServiceList', {
-                                    title: 'Featured Services',
-                                    data: services,
-                                    type: 'services',
-                                })
-                            }
-                        >
-                            <Text className="text-sm font-semibold text-[#5856D6]">See All</Text>
-                        </TouchableOpacity>
                     </View>
 
                     <FlatList
@@ -216,13 +224,13 @@ const HomeScreen = () => {
                     </TouchableOpacity>
 
                     <View className="mb-[15px] mt-[25px] flex-row items-center justify-between px-5">
-                        <Text className="text-xl font-bold text-[#1C1C1E]">Best Sellers</Text>
+                        <Text className="text-xl font-bold text-[#1C1C1E]">Services</Text>
                         <TouchableOpacity
                             onPress={() =>
                                 navigation.navigate('ServiceList', {
-                                    title: 'Best Sellers',
-                                    data: bestSellers,
-                                    type: 'bestSellers',
+                                    title: 'Services',
+                                    data: services,
+                                    type: 'services',
                                 })
                             }
                         >
@@ -230,11 +238,7 @@ const HomeScreen = () => {
                         </TouchableOpacity>
                     </View>
 
-                    <View className="px-5 pb-5">
-                        {bestSellers.map((item) => (
-                            <BestSellerCard key={item.id} item={item} />
-                        ))}
-                    </View>
+                    <Services services={services} />
 
                     {recentlyViewed.length > 0 && (
                         <>
