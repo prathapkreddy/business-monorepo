@@ -1,8 +1,8 @@
 {
     "expo": {
-        "name": "frontend-customer",
+        "name": "Home hero",
         "slug": "frontend-customer",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "scheme": "com.kprathapreddy1997.frontendcustomer",
         "orientation": "portrait",
         "icon": "./assets/icon.png",
