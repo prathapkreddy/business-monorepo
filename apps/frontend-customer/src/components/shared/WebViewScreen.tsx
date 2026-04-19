@@ -366,7 +366,6 @@ const WebViewScreen = () => {
 
     return (
         <View className="flex-1 bg-[#fafaf8]">
-            {Header}
             {WebView ? (
                 <WebView
                     source={{ html: htmlContent ?? fallbackHtml }}
