@@ -118,13 +118,7 @@ const HomeScreen = () => {
                 style={{ flex: 1 }}
                 contentContainerStyle={{ flexGrow: 1 }}
                 showsVerticalScrollIndicator={false}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={isRefreshing}
-                        onRefresh={fetchData}
-
-                    />
-                }
+                refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={fetchData} />}
             >
                 <View className="flex-row items-center justify-between px-5 py-5">
                     <View>
