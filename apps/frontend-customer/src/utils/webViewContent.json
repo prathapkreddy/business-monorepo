@@ -183,5 +183,31 @@
                 }
             }
         ]
+    },
+    "referral": {
+        "eyebrow": "Refer & Earn",
+        "title": "Invite Friends, Earn Rewards!",
+        "sub": "Share the HomeHero experience with your friends and you both get ₹50 credit when they complete their first booking.",
+        "badge": "Special Offer",
+        "steps": [
+            {
+                "title": "Share your code",
+                "content": "Send your unique referral code to your friends via WhatsApp or other social media."
+            },
+            {
+                "title": "Friend signs up",
+                "content": "Your friend uses your code while signing up on the HomeHero app."
+            },
+            {
+                "title": "Both get ₹50",
+                "content": "Once your friend completes their first service booking, ₹50 will be credited to both of your accounts."
+            }
+        ],
+        "terms": [
+            "Referral bonus is only applicable for new users.",
+            "Bonus will be credited after the referred friend's first booking is completed.",
+            "Self-referrals are not allowed and will result in disqualification.",
+            "HomeHero reserves the right to modify or terminate the program at any time."
+        ]
     }
 }

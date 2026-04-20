@@ -16,7 +16,7 @@ GoogleSignin.configure({
 export const useAuth = () => {
     const [loading, setLoading] = useState(false);
 
-    const handleGoogleSignIn = async () => {
+    const handleGoogleAuth = async (referralCode?: string) => {
         setLoading(true);
         try {
             await GoogleSignin.hasPlayServices();
@@ -32,44 +32,14 @@ export const useAuth = () => {
             const firebaseIdToken = await getIdToken(user);
 
             try {
-                await authApi.signInWithGoogle(firebaseIdToken);
+                await authApi.authenticateWithGoogle(firebaseIdToken, referralCode);
             } catch (backendError: any) {
-                console.error('Backend sign in error:', backendError);
+                console.error('Backend auth error:', backendError);
                 await signOut(getAuth());
                 throw backendError;
             }
         } catch (error: any) {
-            console.error('Sign in error:', error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleGoogleSignUp = async () => {
-        setLoading(true);
-        try {
-            await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
-
-            const googleIdToken = userInfo?.data?.idToken;
-            if (!googleIdToken) throw new Error('No ID token received');
-
-            const credential = GoogleAuthProvider.credential(googleIdToken);
-            const { user } = await signInWithCredential(getAuth(), credential);
-
-            // Get the Firebase ID token from the signed-in user
-            const firebaseIdToken = await getIdToken(user);
-
-            try {
-                await authApi.signUpWithGoogle(firebaseIdToken);
-            } catch (backendError: any) {
-                console.error('Backend sign up error:', backendError);
-                await signOut(getAuth());
-                throw backendError;
-            }
-        } catch (error: any) {
-            console.error('Sign up error:', error);
+            console.error('Auth error:', error);
             throw error;
         } finally {
             setLoading(false);
@@ -93,8 +63,7 @@ export const useAuth = () => {
 
     return {
         loading,
-        handleGoogleSignIn,
-        handleGoogleSignUp,
+        handleGoogleAuth,
         handleSignOut,
     };
 };

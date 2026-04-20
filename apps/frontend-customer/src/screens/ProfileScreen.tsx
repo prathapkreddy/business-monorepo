@@ -15,7 +15,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { logout } from '../store/slices/authSlice';
 import { authApi } from '../api/authApi';
-import { LogOut, User, Phone, Mail, Shield, HelpCircle, Info, FileText } from 'lucide-react-native';
+import { LogOut, User, Phone, Mail, Shield, HelpCircle, Info, FileText, Gift, ChevronRight } from 'lucide-react-native';
 import { useNavigation, useScrollToTop } from '@react-navigation/native';
 import axiosInstance from '../api/axiosInstance';
 import { useAuth } from '../hooks/useAuth';
@@ -33,6 +33,7 @@ const ProfileScreen = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [email, setEmail] = useState('');
     const [photoUrl, setPhotoUrl] = useState('');
+    const [referralCode, setReferralCode] = useState('');
     const [originalName, setOriginalName] = useState('');
     const [originalPhoneNumber, setOriginalPhoneNumber] = useState('');
     const [isEditing, setIsEditing] = useState(false);
@@ -97,6 +98,7 @@ const ProfileScreen = () => {
             setOriginalPhoneNumber(formatPhoneNumber(fetchedPhone));
             setEmail(customer.email || authUser?.email || '');
             setPhotoUrl(customer.photoUrl || authUser?.photoURL || '');
+            setReferralCode(customer.referralCode || '');
         } catch (error) {
             console.error('Error fetching profile:', error);
             // Fallback to authUser if DB fetch fails
@@ -282,6 +284,34 @@ const ProfileScreen = () => {
                         Email cannot be updated
                     </Text>
                 </View>
+
+                {/* Refer and Earn Banner */}
+                {!isEditing && (
+                    <TouchableOpacity
+                        onPress={() =>
+                            navigation.navigate('WebViewProfile', {
+                                title: 'Refer & Earn',
+                                referralCode: referralCode,
+                            })
+                        }
+                        className="mx-5 mt-5 overflow-hidden rounded-2xl bg-[#5856D6]"
+                        activeOpacity={0.9}
+                    >
+                        <View className="flex-row items-center justify-between p-5">
+                            <View className="flex-1 pr-4">
+                                <View className="mb-2 flex-row items-center">
+                                    <Gift size={20} color="#FFD700" />
+                                    <Text className="ml-2 font-bold text-white">Refer & Earn</Text>
+                                </View>
+                                <Text className="text-sm leading-5 text-white/90">
+                                    Refer your friends and earn ₹50! Both you and your friend will
+                                    earn ₹50.
+                                </Text>
+                            </View>
+                            <ChevronRight size={24} color="white" />
+                        </View>
+                    </TouchableOpacity>
+                )}
 
                 <View className="mt-5 border-y border-[#eee] bg-white px-5">
                     <LinkItem

@@ -15,17 +15,20 @@ datasource db {
 }
 
 model Customer {
-  id            String    @id // Firebase UID
-  email         String    @unique
-  name          String?
-  photoUrl      String?
-  phoneNumber   String?
-  emailVerified Boolean   @default(false)
-  lastLoginAt   DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id             String    @id // Firebase UID
+  email          String    @unique
+  name           String?
+  photoUrl       String?
+  phoneNumber    String?
+  emailVerified  Boolean   @default(false)
+  referralCode   String    @unique
+  referredByCode String?
+  lastLoginAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  bookings Booking[]
+  bookings      Booking[]
+  referralBonus ReferralBonus?
 
   @@index([createdAt])
   @@index([id])
@@ -107,4 +110,14 @@ model CMSPageContent {
 
   @@index([pageName])
   @@map("cms_page_content")
+}
+
+model ReferralBonus {
+  id         String   @id @default(uuid())
+  customerId String   @unique
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  amount     Float    @default(0)
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("referral_bonuses")
 }

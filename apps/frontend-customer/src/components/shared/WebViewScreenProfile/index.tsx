@@ -6,6 +6,7 @@ import { useWebViewContent } from '../WebViewScreen/useWebViewContent';
 import {
     WebViewContentAboutUs,
     WebViewContentPrivacyPolicy,
+    WebViewContentReferral,
     WebViewContentService,
 } from '../WebViewScreen/WebViewContent';
 
@@ -61,6 +62,8 @@ const WebViewScreenProfile = () => {
             <WebViewContentAboutUs data={pageData} />
         ) : title === 'Privacy Policy' || title === 'Terms of Service' ? (
             <WebViewContentPrivacyPolicy data={pageData} />
+        ) : title === 'Refer & Earn' ? (
+            <WebViewContentReferral data={pageData} />
         ) : pageData?.category ? (
             <WebViewContentService data={pageData} />
         ) : (

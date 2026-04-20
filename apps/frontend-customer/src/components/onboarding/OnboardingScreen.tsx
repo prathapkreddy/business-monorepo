@@ -36,7 +36,7 @@ const OnboardingScreen = ({ navigation }: any) => {
             ref.current?.scrollToIndex({ index: newIndex, animated: true });
         } else {
             await AsyncStorage.setItem('onboarding_done', 'true');
-            navigation.replace('SignIn');
+            navigation.replace('Auth');
         }
     };
 

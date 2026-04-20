@@ -20,6 +20,20 @@ router.get('/profile', authenticate, customerController.getProfile);
 
 /**
  * @swagger
+ * /customers/referral-bonus:
+ *   get:
+ *     summary: Get customer referral bonus
+ *     tags: [Customer]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Referral bonus data
+ */
+router.get('/referral-bonus', authenticate, customerController.getReferralBonus);
+
+/**
+ * @swagger
  * /customers/profile:
  *   put:
  *     summary: Update customer profile

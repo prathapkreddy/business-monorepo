@@ -18,12 +18,13 @@ export const useWebViewContent = () => {
             if (type === 'service' && serviceId) {
                 data = await contentApi.getServiceDetails(serviceId);
             } else {
-                const pageName =
-                    title === 'About Us'
-                        ? 'about'
-                        : title === 'Terms of Service'
-                          ? 'terms'
-                          : 'privacy';
+                const pageNameMap: { [key: string]: string } = {
+                    'About Us': 'about',
+                    'Terms of Service': 'terms',
+                    'Privacy Policy': 'privacy',
+                    'Refer & Earn': 'referral',
+                };
+                const pageName = pageNameMap[title] || 'privacy';
                 data = await contentApi.getPageContent(pageName);
             }
             setPageData(data);

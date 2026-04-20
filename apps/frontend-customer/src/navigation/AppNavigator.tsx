@@ -3,14 +3,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-import SignInScreen from '../components/auth/SignInScreen';
-import SignUpScreen from '../components/auth/SignUpScreen';
 import SplashScreen from '../components/onboarding/SplashScreen';
 import OnboardingScreen from '../components/onboarding/OnboardingScreen';
 import MainTabNavigator from './MainTabNavigator';
 import WebViewScreenProfile from '../components/shared/WebViewScreenProfile';
 import { ActivityIndicator, View, useWindowDimensions, Platform } from 'react-native';
 import BlockadeScreen from '../components/shared/BlockadeScreen';
+import AuthScreen from "../components/auth/AuthScreen";
 
 const Stack = createStackNavigator();
 
@@ -42,8 +41,7 @@ const AppNavigator = () => {
                     ) : (
                         // Auth Routes
                         <>
-                            <Stack.Screen name="SignIn" component={SignInScreen} />
-                            <Stack.Screen name="SignUp" component={SignUpScreen} />
+                            <Stack.Screen name="Auth" component={AuthScreen} />
                         </>
                     )}
                 </Stack.Navigator>

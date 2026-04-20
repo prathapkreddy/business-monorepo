@@ -12,8 +12,29 @@ export class AuthService {
         }
     }
 
-    private async syncCustomerWithDb(decodedToken: any) {
+    private async generateUniqueReferralCode(name: string): Promise<string> {
+        const base = (name || 'USER').toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 4);
+        let code = '';
+        let isUnique = false;
+
+        while (!isUnique) {
+            const random = Math.floor(1000 + Math.random() * 9000); // 4 digit random
+            code = `${base}${random}`;
+            const existing = await prisma.customer.findUnique({
+                where: { referralCode: code },
+            });
+            if (!existing) {
+                isUnique = true;
+            }
+        }
+        return code;
+    }
+
+    private async syncCustomerWithDb(decodedToken: any, providedReferralCode?: any) {
         const { uid, email, name, picture, phone_number, email_verified } = decodedToken;
+
+        // Ensure providedReferralCode is a string and not an object
+        const referralCodeString = typeof providedReferralCode === 'string' ? providedReferralCode : undefined;
 
         let existingCustomer = await prisma.customer.findUnique({
             where: { id: uid },
@@ -32,6 +53,11 @@ export class AuthService {
                         where: { id: existingCustomer!.id },
                     });
 
+                    let referralCode = existingCustomer!.referralCode;
+                    if (!referralCode) {
+                        referralCode = await this.generateUniqueReferralCode(name || existingCustomer!.name || 'USER');
+                    }
+
                     return tx.customer.create({
                         data: {
                             id: uid,
@@ -40,9 +66,25 @@ export class AuthService {
                             photoUrl: picture || existingCustomer!.photoUrl,
                             phoneNumber: phone_number || existingCustomer!.phoneNumber,
                             emailVerified: email_verified,
+                            referralCode: referralCode,
+                            referredByCode: existingCustomer!.referredByCode,
                             lastLoginAt: new Date(),
                         },
                     });
+                });
+            }
+
+            // If user exists but somehow doesn't have a referral code, generate one
+            if (!existingCustomer.referralCode) {
+                return prisma.customer.update({
+                    where: { id: uid },
+                    data: {
+                        lastLoginAt: new Date(),
+                        email: email,
+                        photoUrl: picture,
+                        emailVerified: email_verified,
+                        referralCode: await this.generateUniqueReferralCode(name || existingCustomer.name || 'USER'),
+                    },
                 });
             }
 
@@ -57,6 +99,19 @@ export class AuthService {
             });
         }
 
+        // Validate provided referral code
+        let validReferredByCode: string | undefined = undefined;
+        if (referralCodeString) {
+            const referrer = await prisma.customer.findUnique({
+                where: { referralCode: referralCodeString },
+            });
+            if (referrer) {
+                validReferredByCode = referralCodeString;
+            }
+        }
+
+        const newReferralCode = await this.generateUniqueReferralCode(name || 'USER');
+
         return prisma.customer.create({
             data: {
                 id: uid,
@@ -65,20 +120,16 @@ export class AuthService {
                 photoUrl: picture,
                 phoneNumber: phone_number,
                 emailVerified: email_verified,
+                referralCode: newReferralCode,
+                referredByCode: validReferredByCode,
                 lastLoginAt: new Date(),
             },
         });
     }
 
-    async handleGoogleSignin(idToken: string) {
+    async handleGoogleAuth(idToken: string, referralCode?: string) {
         const decodedToken = await this.verifyIdToken(idToken);
-        const customer = await this.syncCustomerWithDb(decodedToken);
-        return { ...decodedToken, customer };
-    }
-
-    async handleGoogleSignup(idToken: string) {
-        const decodedToken = await this.verifyIdToken(idToken);
-        const customer = await this.syncCustomerWithDb(decodedToken);
+        const customer = await this.syncCustomerWithDb(decodedToken, referralCode);
         return { ...decodedToken, customer };
     }
 }

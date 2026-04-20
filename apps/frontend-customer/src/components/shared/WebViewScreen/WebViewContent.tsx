@@ -1,5 +1,9 @@
-import React from 'react';
-import { ScrollView, Text, View, Platform, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, Text, View, Platform, TouchableOpacity, Alert, Share, Linking, ActivityIndicator } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import { Copy, Share2, MessageCircle, MoreHorizontal, Wallet, Info as InfoIcon } from 'lucide-react-native';
+import * as Clipboard from 'expo-clipboard';
+import axiosInstance from '../../../api/axiosInstance';
 
 const Tag = ({ label }: { label: string }) => (
     <View className="rounded-full bg-[#d8f3e8] px-3 py-1">
@@ -222,5 +226,175 @@ export const WebViewContentService = ({ data }: { data: any }) => {
                 </TouchableOpacity>
             </View>
         </View>
+    );
+};
+
+export const WebViewContentReferral = ({ data }: { data: any }) => {
+    const route = useRoute<any>();
+    const referralCode = route.params?.referralCode || 'NOTAVAIL';
+    const [referralBonus, setReferralBonus] = useState<{ amount: number; updatedAt: string } | null>(null);
+    const [loadingBonus, setLoadingBonus] = useState(true);
+
+    useEffect(() => {
+        const fetchReferralBonus = async () => {
+            try {
+                const response = await axiosInstance.get('/customers/referral-bonus');
+                setReferralBonus(response.data);
+            } catch (error) {
+                console.error('Error fetching referral bonus:', error);
+            } finally {
+                setLoadingBonus(false);
+            }
+        };
+        fetchReferralBonus();
+    }, []);
+
+    const shareMessage = `Hey! Use my referral code ${referralCode} to get ₹50 off on your first home service with HomeHero! Download the app now.`;
+
+    const onCopy = async () => {
+        await Clipboard.setStringAsync(referralCode);
+        Alert.alert('Copied', 'Referral code copied to clipboard');
+    };
+
+    const onShare = async () => {
+        try {
+            await Share.share({
+                message: shareMessage,
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const onWhatsAppShare = () => {
+        const url = `whatsapp://send?text=${encodeURIComponent(shareMessage)}`;
+        Linking.canOpenURL(url).then((supported) => {
+            if (supported) {
+                Linking.openURL(url);
+            } else {
+                // Fallback to web URL if app is not installed
+                Linking.openURL(`https://wa.me/?text=${encodeURIComponent(shareMessage)}`);
+            }
+        });
+    };
+
+    const onMoreShare = async () => {
+        await onShare();
+    };
+
+    return (
+        <Container>
+            <View className="mb-9 border-b border-[#e8e8e4] pb-7">
+                <Text className="mb-3 text-[11px] font-medium uppercase tracking-[1.5px] text-[#2d6a4f]">
+                    {data.hero.eyebrow}
+                </Text>
+                <Text className="mb-3.5 text-[32px] font-normal leading-[38px] text-[#1a1a18]">
+                    {data.hero.title}
+                </Text>
+                <Text className="text-[15px] leading-[26px] text-[#6b6b67]">{data.hero.sub}</Text>
+            </View>
+
+            <View className="mb-8 items-center rounded-3xl border border-[#e8e8e4] bg-white p-6 shadow-sm shadow-black/5">
+                <Text className="mb-2 text-xs font-medium uppercase tracking-wider text-[#8E8E93]">
+                    Your Earnings
+                </Text>
+                {loadingBonus ? (
+                    <ActivityIndicator size="small" color="#5856D6" className="my-2" />
+                ) : (
+                    <View className="items-center">
+                        <View className="mb-2 flex-row items-center gap-2">
+                            <Wallet size={24} color="#5856D6" />
+                            <Text className="text-3xl font-bold text-[#5856D6]">
+                                ₹{referralBonus?.amount || 0}
+                            </Text>
+                        </View>
+                        {referralBonus?.updatedAt && (
+                            <Text className="mb-4 text-xs text-[#8E8E93]">
+                                Updated: {new Date(referralBonus.updatedAt).toLocaleDateString()} at {new Date(referralBonus.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </Text>
+                        )}
+                        <View className="flex-row items-center gap-1.5 rounded-lg bg-[#F2F2F7] px-3 py-1.5">
+                            <InfoIcon size={14} color="#8E8E93" />
+                            <Text className="text-[11px] font-medium text-[#8E8E93]">
+                                Values update every 24-48 hours
+                            </Text>
+                        </View>
+                    </View>
+                )}
+            </View>
+
+            <View className="mb-8 items-center rounded-3xl border border-[#e8e8e4] bg-white p-6 shadow-sm shadow-black/5">
+                <Text className="mb-2 text-xs font-medium uppercase tracking-wider text-[#8E8E93]">
+                    Your Referral Code
+                </Text>
+                <Text className="mb-4 text-3xl font-bold tracking-[4px] text-[#5856D6]">
+                    {referralCode}
+                </Text>
+                <View className="flex-row gap-4">
+                    <TouchableOpacity
+                        onPress={onCopy}
+                        className="flex-row items-center gap-2 rounded-xl bg-[#F2F2F7] px-4 py-2"
+                    >
+                        <Copy size={16} color="#5856D6" />
+                        <Text className="font-medium text-[#5856D6]">Copy</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={onShare}
+                        className="flex-row items-center gap-2 rounded-xl bg-[#5856D6] px-4 py-2"
+                    >
+                        <Share2 size={16} color="white" />
+                        <Text className="font-medium text-white">Share</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            <View className="mb-8">
+                <Text className="mb-4 text-xl font-bold text-[#1a1a18]">How it Works</Text>
+                <View className="gap-4">
+                    {data.steps.map((step: any, idx: number) => (
+                        <PrivacyItem key={idx} num={idx + 1} title={step.title}>
+                            <Text className="text-sm leading-[22px] text-[#6b6b67]">
+                                {step.content}
+                            </Text>
+                        </PrivacyItem>
+                    ))}
+                </View>
+            </View>
+
+            <View className="mb-8">
+                <Text className="mb-3 text-xl font-bold text-[#1a1a18]">Terms & Conditions</Text>
+                <BulletList items={data.terms} />
+            </View>
+
+            <View className="mb-10 gap-4">
+                <Text className="mb-1 text-lg font-bold text-[#1a1a18]">Share via</Text>
+                
+                <View className="flex-row flex-wrap gap-3">
+                    <TouchableOpacity
+                        onPress={onWhatsAppShare}
+                        className="flex-1 min-w-[100px] flex-row items-center justify-center gap-2 rounded-2xl bg-[#25D366] py-4"
+                    >
+                        <MessageCircle size={20} color="white" />
+                        <Text className="font-bold text-white">WhatsApp</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={onMoreShare}
+                        className="flex-1 min-w-[100px] flex-row items-center justify-center gap-2 rounded-2xl bg-[#8E8E93] py-4"
+                    >
+                        <MoreHorizontal size={20} color="white" />
+                        <Text className="font-bold text-white">More</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={onCopy}
+                        className="flex-1 min-w-[100px] flex-row items-center justify-center gap-2 rounded-2xl border border-[#e8e8e4] bg-white py-4"
+                    >
+                        <Copy size={20} color="#1a1a18" />
+                        <Text className="font-bold text-[#1a1a18]">Copy</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Container>
     );
 };

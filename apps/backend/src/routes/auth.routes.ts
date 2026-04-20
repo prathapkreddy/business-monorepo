@@ -5,9 +5,9 @@ const router = Router();
 
 /**
  * @swagger
- * /auth/google-signin:
+ * /auth/google:
  *   post:
- *     summary: Google sign-in
+ *     summary: Google authentication (upsert)
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -17,10 +17,12 @@ const router = Router();
  *             type: object
  *             properties:
  *               idToken:
+ *                 type: string
+ *               referralCode:
  *                 type: string
  *     responses:
  *       200:
- *         description: Login successful
+ *         description: Auth successful
  *         content:
  *           application/json:
  *             schema:
@@ -31,36 +33,6 @@ const router = Router();
  *                 user:
  *                   type: object
  */
-router.post('/google-signin', authController.googleSignin);
-
-/**
- * @swagger
- * /auth/google-signup:
- *   post:
- *     summary: Google sign-up
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               idToken:
- *                 type: string
- *     responses:
- *       201:
- *         description: User created successful
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                 user:
- *                   type: object
- */
-router.post('/google-signup', authController.googleSignup);
+router.post('/google', authController.googleAuth);
 
 export default router;

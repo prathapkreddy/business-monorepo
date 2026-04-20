@@ -22,7 +22,7 @@ const SplashScreen = ({ navigation }: any) => {
                         });
                     } else {
                         if (onboardingDone === 'true') {
-                            navigation.replace('SignIn');
+                            navigation.replace('Auth');
                         } else {
                             navigation.replace('Onboarding');
                         }

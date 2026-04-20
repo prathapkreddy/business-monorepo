@@ -16,6 +16,17 @@ export class CustomerController {
         }
     }
 
+    async getReferralBonus(req: Request, res: Response) {
+        try {
+            const uid = (req as any).user.uid;
+            const referralBonus = await customerService.getReferralBonus(uid);
+            res.json(referralBonus || { amount: 0, updatedAt: new Date() });
+        } catch (error) {
+            console.error('Error fetching referral bonus:', error);
+            res.status(500).json({ error: 'Failed to fetch referral bonus' });
+        }
+    }
+
     async updateProfile(req: Request, res: Response) {
         try {
             const uid = (req as any).user.uid;

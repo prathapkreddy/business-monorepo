@@ -17,6 +17,12 @@ export class CustomerService {
         });
     }
 
+    async getReferralBonus(uid: string) {
+        return prisma.referralBonus.findUnique({
+            where: { customerId: uid },
+        });
+    }
+
     async deleteAccount(uid: string) {
         // According to GDPR/Privacy requirements, we should delete all associated data
         // Delete bookings first then the customer
