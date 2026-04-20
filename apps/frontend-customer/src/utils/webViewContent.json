@@ -127,5 +127,61 @@
                 }
             }
         ]
+    },
+    "terms": {
+        "eyebrow": "HomeHero",
+        "sub": "Please read these Terms of Service carefully before using the HomeHero platform and services.",
+        "badge": "Last updated — Apr 10 2026",
+        "items": [
+            {
+                "num": "01",
+                "title": "Acceptance of Terms",
+                "content": "By accessing or using HomeHero, you agree to be bound by these Terms. If you do not agree, you may not use our services."
+            },
+            {
+                "num": "02",
+                "title": "Service Description",
+                "content": "HomeHero provides a platform to connect customers with service professionals for various home services."
+            },
+            {
+                "num": "03",
+                "title": "User Responsibilities",
+                "bullets": [
+                    "Provide accurate information",
+                    "Maintain account security",
+                    "Comply with all applicable laws",
+                    "Respect service professionals"
+                ]
+            },
+            {
+                "num": "04",
+                "title": "Booking & Payments",
+                "content": "Bookings are subject to availability. Payments must be made through our secure payment gateway or as specified for the service."
+            },
+            {
+                "num": "05",
+                "title": "Cancellations & Refunds",
+                "content": "Cancellation policies vary by service. Please refer to the specific service details for cancellation and refund terms."
+            },
+            {
+                "num": "06",
+                "title": "Limitation of Liability",
+                "content": "HomeHero is not liable for any indirect, incidental, or consequential damages arising from the use of our services."
+            },
+            {
+                "num": "07",
+                "title": "Governing Law",
+                "content": "These Terms are governed by the laws of the jurisdiction where HomeHero operates."
+            },
+            {
+                "num": "08",
+                "title": "Contact Us",
+                "card": {
+                    "icon": "✉️",
+                    "label": "Questions about terms?",
+                    "value": "homeheroin@gmail.com"
+                }
+            }
+        ]
     }
 }

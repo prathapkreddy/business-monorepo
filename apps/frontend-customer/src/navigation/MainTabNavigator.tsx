@@ -35,11 +35,6 @@ const ProfileStackScreen = () => (
             component={ProfileScreen}
             options={{ title: 'Profile', headerShown: false }}
         />
-        <ProfileStack.Screen
-            name="WebView"
-            component={WebViewScreen}
-            options={({ route }: any) => ({ title: route.params?.title || 'Page' })}
-        />
     </ProfileStack.Navigator>
 );
 

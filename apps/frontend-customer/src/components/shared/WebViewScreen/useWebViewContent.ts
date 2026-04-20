@@ -18,7 +18,12 @@ export const useWebViewContent = () => {
             if (type === 'service' && serviceId) {
                 data = await contentApi.getServiceDetails(serviceId);
             } else {
-                const pageName = title === 'About Us' ? 'about' : 'privacy';
+                const pageName =
+                    title === 'About Us'
+                        ? 'about'
+                        : title === 'Terms of Service'
+                          ? 'terms'
+                          : 'privacy';
                 data = await contentApi.getPageContent(pageName);
             }
             setPageData(data);

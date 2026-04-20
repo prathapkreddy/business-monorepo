@@ -8,6 +8,7 @@ import SignUpScreen from '../components/auth/SignUpScreen';
 import SplashScreen from '../components/onboarding/SplashScreen';
 import OnboardingScreen from '../components/onboarding/OnboardingScreen';
 import MainTabNavigator from './MainTabNavigator';
+import WebViewScreenProfile from '../components/shared/WebViewScreenProfile';
 import { ActivityIndicator, View, useWindowDimensions, Platform } from 'react-native';
 import BlockadeScreen from '../components/shared/BlockadeScreen';
 
@@ -30,7 +31,14 @@ const AppNavigator = () => {
                     <Stack.Screen name="Onboarding" component={OnboardingScreen} />
                     {user ? (
                         // Protected Routes
-                        <Stack.Screen name="Main" component={MainTabNavigator} />
+                        <>
+                            <Stack.Screen name="Main" component={MainTabNavigator} />
+                            <Stack.Screen
+                                name="WebViewProfile"
+                                component={WebViewScreenProfile}
+                                options={{ presentation: 'card' }}
+                            />
+                        </>
                     ) : (
                         // Auth Routes
                         <>

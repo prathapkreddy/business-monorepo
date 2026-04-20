@@ -106,12 +106,15 @@ const ServiceListScreen = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-white" style={{ flex: 1 }}>
-            <View className="flex-row items-center justify-between border-b border-[#F2F2F7] px-2.5 py-[15px]">
+            <View
+                className="flex-row items-center justify-between border-b border-[#F2F2F7] bg-white px-2.5 py-[18px] shadow-sm shadow-black/10"
+                style={{ elevation: 3 }}
+            >
                 <TouchableOpacity onPress={() => navigation.goBack()} className="p-2.5">
-                    <ArrowLeft color="#1C1C1E" size={24} />
+                    <ArrowLeft color="#1C1C1E" size={28} />
                 </TouchableOpacity>
-                <Text className="text-lg font-bold text-[#1C1C1E]">{title}</Text>
-                <View className="w-10" />
+                <Text className="text-xl font-bold text-[#1C1C1E]">{title}</Text>
+                <View className="w-12" />
             </View>
 
             <FlatList

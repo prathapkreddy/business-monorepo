@@ -15,7 +15,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { logout } from '../store/slices/authSlice';
 import { authApi } from '../api/authApi';
-import { LogOut, User, Phone, Mail, Shield, HelpCircle, Info, Trash2 } from 'lucide-react-native';
+import { LogOut, User, Phone, Mail, Shield, HelpCircle, Info, FileText } from 'lucide-react-native';
 import { useNavigation, useScrollToTop } from '@react-navigation/native';
 import axiosInstance from '../api/axiosInstance';
 import { useAuth } from '../hooks/useAuth';
@@ -204,19 +204,28 @@ const ProfileScreen = () => {
 
                 <View className="mt-5 border-y border-[#eee] bg-white px-5">
                     <LinkItem
+                        icon={Info}
+                        label="About Us"
+                        onPress={() => navigation.navigate('WebViewProfile', { title: 'About Us' })}
+                    />
+                    <LinkItem
                         icon={Shield}
                         label="Privacy Policy"
-                        onPress={() => navigation.navigate('WebView', { title: 'Privacy Policy' })}
+                        onPress={() =>
+                            navigation.navigate('WebViewProfile', { title: 'Privacy Policy' })
+                        }
+                    />
+                    <LinkItem
+                        icon={FileText}
+                        label="Terms of Service"
+                        onPress={() =>
+                            navigation.navigate('WebViewProfile', { title: 'Terms of Service' })
+                        }
                     />
                     <LinkItem
                         icon={HelpCircle}
                         label="Help & Support"
                         onPress={() => Linking.openURL(WA_URL)}
-                    />
-                    <LinkItem
-                        icon={Info}
-                        label="About Us"
-                        onPress={() => navigation.navigate('WebView', { title: 'About Us' })}
                     />
                     {/*<LinkItem*/}
                     {/*    icon={Trash2}*/}

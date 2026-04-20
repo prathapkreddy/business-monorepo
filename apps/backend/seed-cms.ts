@@ -55,6 +55,29 @@ async function seed() {
             content: privacy.items,
         },
     });
+    
+    // Terms Page
+    const terms = data.terms;
+    const termsHero = {
+        eyebrow: terms.eyebrow,
+        sub: terms.sub,
+        badge: terms.badge,
+    };
+    await prisma.cMSPageContent.create({
+        data: {
+            pageName: 'terms',
+            section: 'hero',
+            content: termsHero,
+        },
+    });
+
+    await prisma.cMSPageContent.create({
+        data: {
+            pageName: 'terms',
+            section: 'items',
+            content: terms.items,
+        },
+    });
 
     console.log('Database seeded with CMS content!');
 }
