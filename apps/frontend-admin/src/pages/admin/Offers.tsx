@@ -9,7 +9,9 @@ export default function Offers() {
           <CardTitle>Manage Offers</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">This is a dummy page for managing promotional offers.</p>
+          <p className="text-muted-foreground">
+            This is a dummy page for managing promotional offers.
+          </p>
         </CardContent>
       </Card>
     </div>

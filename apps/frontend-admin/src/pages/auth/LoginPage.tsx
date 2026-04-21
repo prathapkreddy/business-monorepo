@@ -4,7 +4,14 @@ import { useAppDispatch } from '@/hooks/redux';
 import { setCredentials } from '@/store/slices/authSlice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -23,37 +30,45 @@ export default function LoginPage() {
     <Card>
       <CardHeader>
         <CardTitle>Login</CardTitle>
-        <CardDescription>Enter your email and password to access the admin panel</CardDescription>
+        <CardDescription>
+          Enter your email and password to access the admin panel
+        </CardDescription>
       </CardHeader>
       <form onSubmit={handleLogin}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Email</label>
-            <Input 
-              type="email" 
-              placeholder="admin@example.com" 
+            <Input
+              type="email"
+              placeholder="admin@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required 
+              required
             />
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium">Password</label>
-              <Link to="/reset-password" name="reset-password-link" className="text-xs text-primary hover:underline">
+              <Link
+                to="/reset-password"
+                name="reset-password-link"
+                className="text-primary text-xs hover:underline"
+              >
                 Forgot password?
               </Link>
             </div>
-            <Input 
-              type="password" 
+            <Input
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required 
+              required
             />
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full">Sign In</Button>
+          <Button type="submit" className="w-full">
+            Sign In
+          </Button>
         </CardFooter>
       </form>
     </Card>

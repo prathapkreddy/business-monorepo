@@ -43,7 +43,14 @@ function App() {
       </Route>
 
       <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
-      <Route path="*" element={<div className="flex items-center justify-center min-h-screen">404 - Not Found</div>} />
+      <Route
+        path="*"
+        element={
+          <div className="flex min-h-screen items-center justify-center">
+            404 - Not Found
+          </div>
+        }
+      />
     </Routes>
   );
 }

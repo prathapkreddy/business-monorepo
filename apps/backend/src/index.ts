@@ -9,6 +9,7 @@ import customerRoutes from './routes/customer.routes';
 import bookingRoutes from './routes/booking.routes';
 import homeRoutes from './routes/home.routes';
 import contentRoutes from './routes/content.routes';
+import adminRoutes from './routes/admin.routes';
 import prisma from './lib/prisma';
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use('/customers', customerRoutes);
 app.use('/bookings', bookingRoutes);
 app.use('/home', homeRoutes);
 app.use('/content', contentRoutes);
+app.use('/admin', adminRoutes);
 
 const startServer = async () => {
     try {

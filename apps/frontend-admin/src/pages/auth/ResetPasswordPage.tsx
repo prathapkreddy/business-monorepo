@@ -2,7 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState('');
@@ -35,24 +42,32 @@ export default function ResetPasswordPage() {
     <Card>
       <CardHeader>
         <CardTitle>Reset Password</CardTitle>
-        <CardDescription>Enter your email address and we'll send you a link to reset your password</CardDescription>
+        <CardDescription>
+          Enter your email address and we'll send you a link to reset your
+          password
+        </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent>
           <div className="space-y-2">
             <label className="text-sm font-medium">Email</label>
-            <Input 
-              type="email" 
-              placeholder="admin@example.com" 
+            <Input
+              type="email"
+              placeholder="admin@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required 
+              required
             />
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
-          <Button type="submit" className="w-full">Send Reset Link</Button>
-          <Link to="/login" className="text-sm text-muted-foreground hover:text-primary">
+          <Button type="submit" className="w-full">
+            Send Reset Link
+          </Button>
+          <Link
+            to="/login"
+            className="text-muted-foreground hover:text-primary text-sm"
+          >
             Back to login
           </Link>
         </CardFooter>

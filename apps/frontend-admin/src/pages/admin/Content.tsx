@@ -9,7 +9,9 @@ export default function Content() {
           <CardTitle>Manage Content</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">This is a dummy page for managing web application content.</p>
+          <p className="text-muted-foreground">
+            This is a dummy page for managing web application content.
+          </p>
         </CardContent>
       </Card>
     </div>

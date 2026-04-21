@@ -9,7 +9,9 @@ export default function Account() {
           <CardTitle>Account Settings</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">This is a dummy page for managing your account settings.</p>
+          <p className="text-muted-foreground">
+            This is a dummy page for managing your account settings.
+          </p>
         </CardContent>
       </Card>
     </div>

@@ -14,6 +14,7 @@ const customer_routes_1 = __importDefault(require("./routes/customer.routes"));
 const booking_routes_1 = __importDefault(require("./routes/booking.routes"));
 const home_routes_1 = __importDefault(require("./routes/home.routes"));
 const content_routes_1 = __importDefault(require("./routes/content.routes"));
+const admin_routes_1 = __importDefault(require("./routes/admin.routes"));
 const prisma_1 = __importDefault(require("./lib/prisma"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -29,6 +30,7 @@ app.use('/customers', customer_routes_1.default);
 app.use('/bookings', booking_routes_1.default);
 app.use('/home', home_routes_1.default);
 app.use('/content', content_routes_1.default);
+app.use('/admin', admin_routes_1.default);
 const startServer = async () => {
     try {
         try {

@@ -132,3 +132,15 @@ model SystemParameter {
 
   @@map("system_parameters")
 }
+
+model AdminUser {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("ADMIN") // e.g., ADMIN, SUPERADMIN
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admin_users")
+}

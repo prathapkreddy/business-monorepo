@@ -9,7 +9,9 @@ export default function Services() {
           <CardTitle>Manage Services</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">This is a dummy page for managing business services.</p>
+          <p className="text-muted-foreground">
+            This is a dummy page for managing business services.
+          </p>
         </CardContent>
       </Card>
     </div>
