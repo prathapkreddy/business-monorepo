@@ -1,31 +1,51 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import AdminLayout from './layouts/AdminLayout';
+import AuthLayout from './layouts/AuthLayout';
+import LoginPage from './pages/auth/LoginPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import Dashboard from './pages/admin/Dashboard';
+import Offers from './pages/admin/Offers';
+import Services from './pages/admin/Services';
+import Account from './pages/admin/Account';
+import Content from './pages/admin/Content';
+import { useAppSelector } from './hooks/redux';
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return <>{children}</>;
+}
 
 function App() {
-    const [count, setCount] = useState(0);
+  return (
+    <Routes>
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+      </Route>
 
-    return (
-        <>
-            <div>
-                <a href="https://vite.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo" />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-        </>
-    );
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="offers" element={<Offers />} />
+        <Route path="services" element={<Services />} />
+        <Route path="account" element={<Account />} />
+        <Route path="content" element={<Content />} />
+      </Route>
+
+      <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+      <Route path="*" element={<div className="flex items-center justify-center min-h-screen">404 - Not Found</div>} />
+    </Routes>
+  );
 }
 
 export default App;
