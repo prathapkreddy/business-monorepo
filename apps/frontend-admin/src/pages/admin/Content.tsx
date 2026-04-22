@@ -1,11 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   useGetAllContentQuery,
   useSaveContentMutation,
 } from '@/store/api/adminApi';
 import { Button } from '@/components/ui/button';
 import { Edit2, ArrowLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 interface ContentItem {
   id: string;
