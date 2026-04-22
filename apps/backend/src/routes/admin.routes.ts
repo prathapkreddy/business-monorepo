@@ -15,6 +15,7 @@ router.use(adminAuthenticate);
 
 // Profile
 router.get('/profile', adminProfileController.getProfile);
+router.post('/change-password', adminProfileController.changePassword);
 
 // Content
 router.get('/content', adminContentController.getAllContent);

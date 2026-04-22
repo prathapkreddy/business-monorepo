@@ -11,7 +11,16 @@ export const adminAuthenticate = (req: Request, res: Response, next: NextFunctio
 
     const token = authHeader.split('Bearer ')[1];
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, JWT_SECRET) as any;
+
+        // If it's a temporary token, only allow password change
+        if (decoded.temp && req.path !== '/change-password') {
+            return res.status(403).json({
+                message: 'Password reset required. You are only authorized to change your password.',
+                resetPasswordRequired: true,
+            });
+        }
+
         (req as any).admin = decoded;
         next();
     } catch (error) {

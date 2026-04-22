@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '@/hooks/redux';
+import { logout } from '@/store/slices/authSlice';
+import { useChangePasswordMutation } from '@/store/api/adminApi';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -12,28 +15,55 @@ import {
 } from '@/components/ui/card';
 
 export default function ResetPasswordPage() {
-  const [email, setEmail] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [changePassword, { isLoading }] = useChangePasswordMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    setError(null);
+
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    if (newPassword === '0000') {
+        setError('Please choose a different password from the default');
+        return;
+    }
+
+    try {
+      await changePassword({ 
+          currentPassword: '0000', 
+          newPassword 
+      }).unwrap();
+      
+      setSuccess(true);
+      // Wait a bit then logout and redirect to login
+      setTimeout(() => {
+        dispatch(logout());
+        navigate('/login');
+      }, 3000);
+    } catch (err: any) {
+      setError(err.data?.message || 'Failed to reset password');
+    }
   };
 
-  if (isSubmitted) {
+  if (success) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Check your email</CardTitle>
+          <CardTitle>Success</CardTitle>
           <CardDescription>
-            We've sent a password reset link to <strong>{email}</strong>
+            Your password has been reset successfully. Redirecting to login...
           </CardDescription>
         </CardHeader>
-        <CardFooter>
-          <Button asChild className="w-full">
-            <Link to="/login">Return to login</Link>
-          </Button>
-        </CardFooter>
       </Card>
     );
   }
@@ -43,33 +73,41 @@ export default function ResetPasswordPage() {
       <CardHeader>
         <CardTitle>Reset Password</CardTitle>
         <CardDescription>
-          Enter your email address and we'll send you a link to reset your
-          password
+          You are using the default password. Please set a new password to continue.
         </CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit}>
-        <CardContent>
+      <form onSubmit={handleReset}>
+        <CardContent className="space-y-4">
+          {error && (
+            <div className="text-destructive text-sm font-medium text-center">
+              {error}
+            </div>
+          )}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Email</label>
+            <label className="text-sm font-medium">New Password</label>
             <Input
-              type="email"
-              placeholder="admin@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="password"
+              placeholder="Enter new password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Confirm New Password</label>
+            <Input
+              type="password"
+              placeholder="Confirm new password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
-          <Button type="submit" className="w-full">
-            Send Reset Link
+        <CardFooter>
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? 'Resetting...' : 'Reset Password'}
           </Button>
-          <Link
-            to="/login"
-            className="text-muted-foreground hover:text-primary text-sm"
-          >
-            Back to login
-          </Link>
         </CardFooter>
       </form>
     </Card>

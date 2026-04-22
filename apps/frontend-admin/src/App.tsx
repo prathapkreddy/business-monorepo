@@ -2,13 +2,13 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminLayout from './layouts/AdminLayout';
 import AuthLayout from './layouts/AuthLayout';
 import LoginPage from './pages/auth/LoginPage';
-import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import Dashboard from './pages/admin/Dashboard';
 import Offers from './pages/admin/Offers';
 import Services from './pages/admin/Services';
 import Account from './pages/admin/Account';
 import Content from './pages/admin/Content';
 import { useAppSelector } from './hooks/redux';
+import ResetPasswordPage from "@/pages/auth/ResetPasswordPage.tsx";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
