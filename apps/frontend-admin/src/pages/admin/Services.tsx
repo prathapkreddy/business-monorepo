@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useGetAllServicesQuery, useUpdateServiceMutation } from '@/store/api/adminApi';
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import { Edit2, ArrowLeft, Star, Tag, Calendar } from "lucide-react";
+import { Edit2, ArrowLeft, Star, Tag, Calendar, Plus, X } from "lucide-react";
 
 interface Service {
   id: string;
@@ -29,16 +29,19 @@ export default function Services() {
   const [editValue, setEditValue] = useState('');
   const [editName, setEditName] = useState('');
   const [editCategory, setEditCategory] = useState('');
+  const [editImage, setEditImage] = useState('');
   const [editPrice, setEditPrice] = useState('');
   const [editMrp, setEditMrp] = useState('');
   const [editRating, setEditRating] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [showCreatePopup, setShowCreatePopup] = useState(false);
 
   const handleEdit = (service: Service) => {
     setEditingItem(service);
     setEditValue(JSON.stringify(service.details?.content || {}, null, 2));
     setEditName(service.name);
     setEditCategory(service.category);
+    setEditImage(service.image || '');
     setEditPrice(service.price.toString());
     setEditMrp(service.mrp.toString());
     setEditRating(service.rating.toString());
@@ -50,6 +53,7 @@ export default function Services() {
     setEditValue('');
     setEditName('');
     setEditCategory('');
+    setEditImage('');
     setEditPrice('');
     setEditMrp('');
     setEditRating('');
@@ -74,6 +78,7 @@ export default function Services() {
         id: editingItem.id,
         name: editName,
         category: editCategory,
+        image: editImage,
         price: parseFloat(editPrice),
         mrp: parseFloat(editMrp),
         rating: parseFloat(editRating),
@@ -133,6 +138,14 @@ export default function Services() {
             />
           </div>
           <div className="space-y-2">
+            <label className="text-sm font-medium">Image URL</label>
+            <Input 
+              value={editImage} 
+              onChange={(e) => setEditImage(e.target.value)} 
+              placeholder="https://example.com/image.jpg"
+            />
+          </div>
+          <div className="space-y-2">
             <label className="text-sm font-medium">Price</label>
             <Input 
               type="number"
@@ -182,7 +195,37 @@ export default function Services() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Services</h1>
+        <Button onClick={() => setShowCreatePopup(true)} className="flex items-center gap-2">
+          <Plus size={18} />
+          Create Service
+        </Button>
       </div>
+
+      {showCreatePopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-lg bg-card p-6 shadow-lg border">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold">Create New Service</h2>
+              <Button variant="ghost" size="icon" onClick={() => setShowCreatePopup(false)}>
+                <X size={20} />
+              </Button>
+            </div>
+            <div className="space-y-4">
+              <p className="text-muted-foreground">
+                This is a dummy popup for creating a new service. Full implementation coming soon.
+              </p>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button variant="outline" onClick={() => setShowCreatePopup(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={() => setShowCreatePopup(false)}>
+                  Create (Dummy)
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="rounded-md border bg-card">
         <table className="w-full text-left text-sm">
