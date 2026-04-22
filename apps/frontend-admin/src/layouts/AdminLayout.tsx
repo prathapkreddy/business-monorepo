@@ -11,8 +11,11 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTheme } from '@/components/theme-provider';
 import { cn } from '@/lib/utils';
 import { useAppDispatch } from '@/hooks/redux';
 import { logout } from '@/store/slices/authSlice';
@@ -28,6 +31,7 @@ const menuItems = [
 export default function AdminLayout() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -158,6 +162,20 @@ export default function AdminLayout() {
           </Button>
           <div className="ml-4 md:ml-0">
             <h2 className="text-lg font-semibold">Admin Panel</h2>
+          </div>
+          <div className="ml-auto flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              title="Toggle theme"
+            >
+              {theme === 'dark' ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+            </Button>
           </div>
         </header>
 
